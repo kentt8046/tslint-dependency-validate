@@ -16,7 +16,11 @@
           ],
           "imports": [
             "../**"
-          ]
+          ],
+          "resolved": [
+            "node_modules/**"
+          ],
+          "builtin": true
         }
       ]
     ]

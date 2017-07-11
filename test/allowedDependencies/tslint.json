@@ -16,7 +16,11 @@
           ],
           "imports": [
             "./lib"
-          ]
+          ],
+          "resolved": [
+            "**/some-module"
+          ],
+          "builtin": true
         }
       ]
     ]
