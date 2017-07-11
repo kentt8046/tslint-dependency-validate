@@ -1,0 +1,21 @@
+{
+  "rulesDirectory": [
+    "../../dist"
+  ],
+  "rules": {
+    "allowed-dependencies": [
+      true,
+      [
+        {
+          "name": "rule1",
+          "sources": [
+            "**/test.ts"
+          ],
+          "imports": [
+            "./lib"
+          ]
+        }
+      ]
+    ]
+  }
+}

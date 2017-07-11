@@ -1,0 +1,27 @@
+{
+  "name": "tslint-dependency-validate",
+  "version": "0.0.1",
+  "main": "tslint-dependency-validate.json",
+  "repository": "git@github.com:kentt8046/tslint-dependency-validate.git",
+  "author": "kentt <kentt8046@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "prepublish": "tsc -p .",
+    "build": "tsc -p .",
+    "watch": "tsc -w -p .",
+    "test": "tslint --test test/**/tslint.json"
+  },
+  "dependencies": {
+    "minimatch": "3.0.4"
+  },
+  "devDependencies": {
+    "@types/minimatch": "2.0.29",
+    "@types/node": "8.0.10",
+    "tslint": "5.5.0",
+    "tslint-microsoft-contrib": "5.0.1",
+    "typescript": "2.4.1"
+  },
+  "peerDependencies": {
+    "tslint": ">=5.5.0"
+  }
+}

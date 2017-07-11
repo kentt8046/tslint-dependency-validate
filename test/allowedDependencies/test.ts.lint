@@ -1,0 +1,7 @@
+import test from "ava";
+                ~~~~~~~
+import { someFunction } from "./lib";
+~~~~~~~~~~~~~~                        [this dependency is not allowed. [rule1]]
+
+test.todo("some test");
+someFunction();
