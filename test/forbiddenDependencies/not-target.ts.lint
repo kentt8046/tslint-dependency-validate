@@ -1,0 +1,5 @@
+import test from "ava";
+import { someFunction } from "../allowedDependencies/lib";
+
+test.todo("some test");
+someFunction();

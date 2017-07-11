@@ -9,7 +9,10 @@
         {
           "name": "rule1",
           "sources": [
-            "**/test.ts"
+            "**/*.ts"
+          ],
+          "excludes": [
+            "**/not-target.ts"
           ],
           "imports": [
             "./lib"

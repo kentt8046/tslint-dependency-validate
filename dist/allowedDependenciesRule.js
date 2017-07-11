@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Lint = require("tslint");
-const minimatch = require("minimatch");
+const util_1 = require("./util");
 class Rule extends Lint.Rules.AbstractRule {
     apply(sourceFile) {
         return this.applyWithWalker(new AllowedDependenciesRuleWalker(sourceFile, this.getOptions()));
@@ -14,31 +14,26 @@ class AllowedDependenciesRuleWalker extends Lint.RuleWalker {
         const _options = this.getOptions();
         if (Array.isArray(_options) && Array.isArray(_options[0])) {
             const [options] = _options;
+            const rootDir = process.cwd();
             const sourceInfo = node.parent;
-            const sourceName = sourceInfo.fileName;
+            const sourceName = sourceInfo.fileName.replace(`${rootDir}/`, "");
             const importInfo = node.moduleSpecifier;
             const moduleName = importInfo.getText().replace(/("|')/g, "");
             for (const rule of options) {
-                const isTarget = isMatch(sourceName, rule.sources);
+                let isTarget = util_1.isMatch(sourceName, rule.sources);
+                if (Array.isArray(rule.excludes)) {
+                    isTarget = isTarget && !util_1.isMatch(sourceName, rule.excludes);
+                }
                 if (!isTarget)
                     break;
-                const allowed = isMatch(moduleName, rule.imports);
+                const allowed = util_1.isMatch(moduleName, rule.imports);
                 if (allowed)
                     break;
-                this.addFailureAt(importInfo.pos, importInfo.end, `${Rule.FAILURE_STRING} [${rule.name}]`);
+                const start = importInfo.end - moduleName.length - 1;
+                this.addFailureAt(start, moduleName.length, `${Rule.FAILURE_STRING} [${rule.name}]`);
             }
         }
         super.visitImportDeclaration(node);
     }
-}
-const options = {
-    dot: true,
-};
-function isMatch(target, patterns) {
-    for (const pattern of patterns) {
-        if (minimatch(target, pattern, options))
-            return true;
-    }
-    return false;
 }
 //# sourceMappingURL=allowedDependenciesRule.js.map
