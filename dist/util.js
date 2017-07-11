@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = require("path");
+const ts = require("typescript");
 const minimatch = require("minimatch");
 const options = {
     dot: true,
@@ -55,28 +56,37 @@ function evaluteRule(info, rule, _expect) {
     }
     return 4;
 }
-function visitImportDeclaration(node, FAILURE_STRING, expect) {
+function visitImportDeclaration(source, expression, FAILURE_STRING, expect) {
     const _options = this.getOptions();
     if (Array.isArray(_options) && Array.isArray(_options[0])) {
         const [options] = _options;
         const rootDir = process.cwd();
-        const sourceInfo = node.parent;
-        const importInfo = node.moduleSpecifier;
-        const moduleName = importInfo.getText().replace(/("|')/g, "");
+        const moduleName = expression.getText().replace(/("|')/g, "");
         const info = {
             rootDir,
-            sourceName: sourceInfo.fileName.replace(`${rootDir}/`, ""),
-            sourceDir: path_1.dirname(sourceInfo.fileName).replace(`${rootDir}/`, ""),
+            sourceName: source.fileName.replace(`${rootDir}/`, ""),
+            sourceDir: path_1.dirname(source.fileName).replace(`${rootDir}/`, ""),
             moduleName,
         };
         for (const rule of options) {
             const matched = evaluteRule(info, rule, expect);
             if (matched)
                 break;
-            const start = importInfo.end - moduleName.length - 1;
+            const start = expression.end - moduleName.length - 1;
             this.addFailureAt(start, moduleName.length, `${FAILURE_STRING} [${rule.name}]`);
         }
     }
 }
 exports.visitImportDeclaration = visitImportDeclaration;
+function getExpression(node) {
+    if (node.kind === ts.SyntaxKind.ImportDeclaration ||
+        node.kind === ts.SyntaxKind.ExportDeclaration) {
+        return node.moduleSpecifier;
+    }
+    else if (node.kind === ts.SyntaxKind.CallExpression) {
+        return node.arguments[0];
+    }
+    throw new Error("unsupported kind.");
+}
+exports.getExpression = getExpression;
 //# sourceMappingURL=util.js.map

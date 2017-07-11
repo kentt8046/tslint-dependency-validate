@@ -6,3 +6,12 @@ import { someModule } from "./module/some-module";
 
 test.todo("some test");
 someFunction();
+
+export * from "ava";
+               ~~~   [this dependency is not allowed. [rule1]]
+const ava = require("ava");
+                     ~~~    [this dependency is not allowed. [rule1]]
+require("ava");
+         ~~~    [this dependency is not allowed. [rule1]]
+Promise.resolve(import("ava"));
+                        ~~~     [this dependency is not allowed. [rule1]]
