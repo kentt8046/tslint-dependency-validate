@@ -1,5 +1,4 @@
 import test from   "ava";
-                    ~~~   [this dependency is not allowed. [rule1]]
 import { someFunction } from "./lib";
 
 test.todo("some test");
