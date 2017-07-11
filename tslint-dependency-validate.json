@@ -1,6 +1,6 @@
 {
   "rulesDirectory": [
-    "../../dist"
+    "./dist"
   ],
   "rules": {
     "allowed-dependencies": [
