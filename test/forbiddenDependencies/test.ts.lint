@@ -1,0 +1,11 @@
+import test from "ava";
+import { someFunction } from "../allowedDependencies/lib";
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+~nil
+test.todo("some test");
+~~~~~~~~~~~~~~~~~~~~~~~
+someFunction();
+~~~~~~~~~~~~~~~
+
+~nil [this dependency is forbidden. [rule1]]
