@@ -1,6 +1,8 @@
+import { dirname, resolve } from "path";
 import test from   "ava";
                     ~~~   [this dependency is not allowed. [rule1]]
 import { someFunction } from "./lib";
+import { someModule } from "./module/some-module";
 
 test.todo("some test");
 someFunction();
