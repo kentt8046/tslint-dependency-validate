@@ -74,28 +74,44 @@ function evaluteRule(info: ImportInfo, rule: DependencyRule, _expect?: boolean) 
   return 4;
 }
 
-export function visitImportDeclaration(this: Lint.RuleWalker, node: ts.ImportDeclaration, FAILURE_STRING: string, expect?: boolean) {
+export function visitImportDeclaration(
+  this: Lint.RuleWalker,
+  source: ts.SourceFile,
+  expression: ts.Expression,
+  FAILURE_STRING: string,
+  expect?: boolean) {
   const _options = this.getOptions();
   if (Array.isArray(_options) && Array.isArray(_options[0])) {
     const [options]: DependencyRule[][] = _options;
 
     const rootDir = process.cwd();
-    const sourceInfo = <ts.SourceFile>node.parent;
-    const importInfo = node.moduleSpecifier;
-    const moduleName = importInfo.getText().replace(/("|')/g, "");
+    const moduleName = expression.getText().replace(/("|')/g, "");
 
     const info: ImportInfo = {
       rootDir,
-      sourceName: sourceInfo.fileName.replace(`${rootDir}/`, ""),
-      sourceDir: dirname(sourceInfo.fileName).replace(`${rootDir}/`, ""),
+      sourceName: source.fileName.replace(`${rootDir}/`, ""),
+      sourceDir: dirname(source.fileName).replace(`${rootDir}/`, ""),
       moduleName,
     };
 
     for (const rule of options) {
       const matched = evaluteRule(info, rule, expect);
       if (matched) break;
-      const start = importInfo.end - moduleName.length - 1;
+      const start = expression.end - moduleName.length - 1;
       this.addFailureAt(start, moduleName.length, `${FAILURE_STRING} [${rule.name}]`);
     }
   }
+}
+
+type IODeclaration = ts.ImportDeclaration | ts.ExportDeclaration;
+export function getExpression(node: ts.Node) {
+  if (
+    node.kind === ts.SyntaxKind.ImportDeclaration ||
+    node.kind === ts.SyntaxKind.ExportDeclaration
+  ) {
+    return (<IODeclaration>node).moduleSpecifier;
+  } else if (node.kind === ts.SyntaxKind.CallExpression) {
+    return (<ts.CallExpression>node).arguments[0];
+  }
+  throw new Error("unsupported kind.");
 }

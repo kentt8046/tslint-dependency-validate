@@ -1,7 +1,7 @@
 import * as ts from "typescript";
 import * as Lint from "tslint";
 
-import { visitImportDeclaration } from "./util";
+import { visitImportDeclaration, getExpression } from "./util";
 
 export class Rule extends Lint.Rules.AbstractRule {
   public static FAILURE_STRING = "this dependency is forbidden.";
@@ -13,7 +13,45 @@ export class Rule extends Lint.Rules.AbstractRule {
 
 class ForbiddenDependenciesRuleWalker extends Lint.RuleWalker {
   public visitImportDeclaration(node: ts.ImportDeclaration) {
-    visitImportDeclaration.call(this, node, Rule.FAILURE_STRING);
+    try {
+      const source = node.getSourceFile();
+      const expression = getExpression(node);
+      visitImportDeclaration.call(this, source, expression, Rule.FAILURE_STRING);
+    } catch (err) {
+      this.addFailureAtNode(node, "syntax error");
+    }
     super.visitImportDeclaration(node);
   }
+
+  public visitCallExpression(node: ts.CallExpression) {
+    if (
+      node.getText().startsWith("require(") ||
+      node.getText().startsWith("import(")
+    ) {
+      try {
+        const source = node.getSourceFile();
+        const expression = getExpression(node);
+
+        visitImportDeclaration.call(this, source, expression, Rule.FAILURE_STRING);
+      } catch (err) {
+        this.addFailureAtNode(node, "syntax error");
+      }
+    }
+    super.visitCallExpression(node);
+  }
+
+  public visitNode(node: ts.Node) {
+    if (node.kind === ts.SyntaxKind.ExportDeclaration) {
+      try {
+        const source = node.getSourceFile();
+        const expression = getExpression(node);
+
+        visitImportDeclaration.call(this, source, expression, Rule.FAILURE_STRING);
+      } catch (err) {
+        this.addFailureAtNode(node, "syntax error");
+      }
+    }
+    super.visitNode(node);
+  }
+
 }
