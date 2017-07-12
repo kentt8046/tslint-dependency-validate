@@ -3,6 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = require("path");
 const ts = require("typescript");
 const minimatch = require("minimatch");
+const module_1 = require("./module");
+const rootDir = process.cwd();
+const nodeModulesDirs = module_1.searchNodeModules(rootDir);
+const paths = module.paths;
+Object.assign(module.paths, [
+    ...nodeModulesDirs,
+    ...paths,
+]);
 const options = {
     dot: true,
 };
@@ -34,6 +42,7 @@ function evaluteRule(info, rule, _expect) {
     }
     if (!isTarget)
         return 1;
+    const hasImport = Array.isArray(rule.imports);
     if (Array.isArray(rule.imports)) {
         const matched = isMatch(moduleName, rule.imports);
         if (matched)
@@ -54,13 +63,12 @@ function evaluteRule(info, rule, _expect) {
             return 3;
         return 0;
     }
-    return 4;
+    return hasImport ? 0 : 4;
 }
 function visitImportDeclaration(source, expression, FAILURE_STRING, expect) {
     const _options = this.getOptions();
     if (Array.isArray(_options) && Array.isArray(_options[0])) {
         const [options] = _options;
-        const rootDir = process.cwd();
         const moduleName = expression.getText().replace(/("|')/g, "");
         const info = {
             rootDir,
