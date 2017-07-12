@@ -1,6 +1,6 @@
 {
   "name": "tslint-dependency-validate",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "main": "tslint-dependency-validate.json",
   "repository": "git@github.com:kentt8046/tslint-dependency-validate.git",
   "author": "kentt <kentt8046@gmail.com>",
