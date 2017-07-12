@@ -4,7 +4,16 @@ import * as ts from "typescript";
 import * as Lint from "tslint";
 import * as minimatch from "minimatch";
 
+import { searchNodeModules } from "./module";
 import { DependencyRule, ImportInfo } from "./interface";
+
+const rootDir = process.cwd();
+const nodeModulesDirs = searchNodeModules(rootDir);
+const paths = (<any>module).paths;
+Object.assign((<any>module).paths, [
+  ...nodeModulesDirs,
+  ...paths,
+]);
 
 const options = {
   dot: true,
@@ -46,10 +55,12 @@ function evaluteRule(info: ImportInfo, rule: DependencyRule, _expect?: boolean) 
   }
   if (!isTarget) return 1;
 
+  const hasImport = Array.isArray(rule.imports);
   if (Array.isArray(rule.imports)) {
     const matched = isMatch(moduleName, rule.imports);
     if (matched) return expect;
   }
+
   if (Array.isArray(rule.resolvedImports)) {
     let moduleFullName;
     if (moduleName.startsWith(".")) {
@@ -71,7 +82,7 @@ function evaluteRule(info: ImportInfo, rule: DependencyRule, _expect?: boolean) 
     return 0;
   }
 
-  return 4;
+  return hasImport ? 0 : 4;
 }
 
 export function visitImportDeclaration(
@@ -84,7 +95,6 @@ export function visitImportDeclaration(
   if (Array.isArray(_options) && Array.isArray(_options[0])) {
     const [options]: DependencyRule[][] = _options;
 
-    const rootDir = process.cwd();
     const moduleName = expression.getText().replace(/("|')/g, "");
 
     const info: ImportInfo = {
