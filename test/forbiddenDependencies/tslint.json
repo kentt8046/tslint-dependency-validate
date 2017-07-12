@@ -24,5 +24,26 @@
         }
       ]
     ]
+  },
+  "jsRules": {
+    "forbidden-dependencies": [
+      true,
+      [
+        {
+          "name": "rule1",
+          "sources": [
+            "**/*.js"
+          ],
+          "excludes": [],
+          "imports": [
+            "../**"
+          ],
+          "resolved": [
+            "node_modules/**"
+          ],
+          "builtin": true
+        }
+      ]
+    ]
   }
 }

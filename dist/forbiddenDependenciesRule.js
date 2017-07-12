@@ -9,6 +9,14 @@ class Rule extends Lint.Rules.AbstractRule {
     }
 }
 Rule.FAILURE_STRING = "this dependency is forbidden.";
+Rule.metadata = {
+    ruleName: "forbidden-dependencies",
+    type: "maintainability",
+    description: "rule of forbidden module in import or require",
+    optionsDescription: "",
+    options: null,
+    typescriptOnly: false
+};
 exports.Rule = Rule;
 class ForbiddenDependenciesRuleWalker extends Lint.RuleWalker {
     visitImportDeclaration(node) {

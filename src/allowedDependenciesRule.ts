@@ -6,6 +6,15 @@ import { visitImportDeclaration, getExpression } from "./util";
 export class Rule extends Lint.Rules.AbstractRule {
   public static FAILURE_STRING = "this dependency is not allowed.";
 
+  public static metadata: Lint.IRuleMetadata = {
+    ruleName: "allowed-dependencies",
+    type: "maintainability",
+    description: "rule of allowed module in import or require",
+    optionsDescription: "",
+    options: null,
+    typescriptOnly: false
+  };
+
   public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
     return this.applyWithWalker(new AllowedDependenciesRuleWalker(sourceFile, this.getOptions()));
   }
