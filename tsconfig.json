@@ -48,7 +48,7 @@
     "./src/**/*.ts",
     "./src/**/*.json"
   ],
-  "exclude": [
+  "excludeSources": [
     "./node_modules",
     "**/__tests__"
   ]

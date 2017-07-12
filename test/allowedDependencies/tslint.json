@@ -11,13 +11,13 @@
           "sources": [
             "**/*.ts"
           ],
-          "excludes": [
+          "excludeSources": [
             "**/not-target.ts"
           ],
           "imports": [
             "./lib"
           ],
-          "resolved": [
+          "resolvedImports": [
             "**/some-module"
           ],
           "builtin": true
@@ -34,11 +34,11 @@
           "sources": [
             "**/*.js"
           ],
-          "excludes": [],
+          "excludeSources": [],
           "imports": [
             "./lib"
           ],
-          "resolved": [
+          "resolvedImports": [
             "**/some-module"
           ],
           "builtin": true
