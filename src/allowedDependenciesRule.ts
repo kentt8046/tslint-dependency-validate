@@ -33,10 +33,8 @@ class AllowedDependenciesRuleWalker extends Lint.RuleWalker {
   }
 
   public visitCallExpression(node: ts.CallExpression) {
-    if (
-      node.getText().startsWith("require(") ||
-      node.getText().startsWith("import(")
-    ) {
+    const funcName = node.expression.getText();
+    if (funcName === "require" || funcName === "import") {
       try {
         const source = node.getSourceFile();
         const expression = getExpression(node);
