@@ -1,7 +1,7 @@
 import { dirname, resolve } from "path";
                                   ~~~~   [this dependency is forbidden. [rule1]]
-import test from "ava";
-                  ~~~   [this dependency is forbidden. [rule1]]
+import test from "typescript";
+                  ~~~~~~~~~~   [this dependency is forbidden. [rule1]]
 import { someFunction } from "../allowedDependencies/lib";
                               ~~~~~~~~~~~~~~~~~~~~~~~~~~   [this dependency is forbidden. [rule1]]
 

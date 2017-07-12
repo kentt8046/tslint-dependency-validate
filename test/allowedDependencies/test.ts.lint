@@ -1,17 +1,17 @@
 import { dirname, resolve } from "path";
-import test from   "ava";
-                    ~~~   [this dependency is not allowed. [rule1]]
+import test from   "typescript";
+                    ~~~~~~~~~~   [this dependency is not allowed. [rule1]]
 import { someFunction } from "./lib";
 import { someModule } from "./module/some-module";
 
 test.todo("some test");
 someFunction();
 
-export * from "ava";
-               ~~~   [this dependency is not allowed. [rule1]]
-const ava = require("ava");
-                     ~~~    [this dependency is not allowed. [rule1]]
-require("ava");
-         ~~~    [this dependency is not allowed. [rule1]]
-Promise.resolve(import("ava"));
-                        ~~~     [this dependency is not allowed. [rule1]]
+export * from "typescript";
+               ~~~~~~~~~~   [this dependency is not allowed. [rule1]]
+const typescript = require("typescript");
+                            ~~~~~~~~~~    [this dependency is not allowed. [rule1]]
+require("typescript");
+         ~~~~~~~~~~    [this dependency is not allowed. [rule1]]
+Promise.resolve(import("typescript"));
+                        ~~~~~~~~~~     [this dependency is not allowed. [rule1]]
