@@ -4,8 +4,8 @@ export interface DependencyRule {
   name: string;
   sources: string[];
   imports?: string[];
-  excludes?: string[];
-  resolved?: string[];
+  excludeSources?: string[];
+  resolvedImports?: string[];
   builtin?: boolean;
 }
 

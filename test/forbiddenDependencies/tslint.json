@@ -11,13 +11,34 @@
           "sources": [
             "**/*.ts"
           ],
-          "excludes": [
+          "excludeSources": [
             "**/not-target.ts"
           ],
           "imports": [
             "../**"
           ],
-          "resolved": [
+          "resolvedImports": [
+            "node_modules/**"
+          ],
+          "builtin": true
+        }
+      ]
+    ]
+  },
+  "jsRules": {
+    "forbidden-dependencies": [
+      true,
+      [
+        {
+          "name": "rule1",
+          "sources": [
+            "**/*.js"
+          ],
+          "excludeSources": [],
+          "imports": [
+            "../**"
+          ],
+          "resolvedImports": [
             "node_modules/**"
           ],
           "builtin": true

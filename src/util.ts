@@ -41,8 +41,8 @@ function evaluteRule(info: ImportInfo, rule: DependencyRule, _expect?: boolean) 
   const expect = !!_expect;
 
   let isTarget = isMatch(sourceName, rule.sources);
-  if (Array.isArray(rule.excludes)) {
-    isTarget = isTarget && !isMatch(sourceName, rule.excludes);
+  if (Array.isArray(rule.excludeSources)) {
+    isTarget = isTarget && !isMatch(sourceName, rule.excludeSources);
   }
   if (!isTarget) return 1;
 
@@ -50,7 +50,7 @@ function evaluteRule(info: ImportInfo, rule: DependencyRule, _expect?: boolean) 
     const matched = isMatch(moduleName, rule.imports);
     if (matched) return expect;
   }
-  if (Array.isArray(rule.resolved)) {
+  if (Array.isArray(rule.resolvedImports)) {
     let moduleFullName;
     if (moduleName.startsWith(".")) {
       // relative import
@@ -63,7 +63,7 @@ function evaluteRule(info: ImportInfo, rule: DependencyRule, _expect?: boolean) 
 
     const matched = (
       (isBuiltinModule(moduleFullName) && !!rule.builtin) ||
-      isMatch(moduleFullName, rule.resolved)
+      isMatch(moduleFullName, rule.resolvedImports)
     );
 
     if (expect === matched) return 3;
