@@ -63,7 +63,7 @@ function evaluteRule(info, rule, _expect) {
             return 3;
         return 0;
     }
-    return hasImport ? 0 : 4;
+    return hasImport ? !expect : 4;
 }
 function visitImportDeclaration(source, expression, FAILURE_STRING, expect) {
     const _options = this.getOptions();

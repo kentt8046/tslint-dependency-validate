@@ -82,7 +82,7 @@ function evaluteRule(info: ImportInfo, rule: DependencyRule, _expect?: boolean) 
     return 0;
   }
 
-  return hasImport ? 0 : 4;
+  return hasImport ? !expect : 4;
 }
 
 export function visitImportDeclaration(
