@@ -79,7 +79,7 @@ function visitImportDeclaration(source, expression, FAILURE_STRING, expect) {
         for (const rule of options) {
             const matched = evaluteRule(info, rule, expect);
             if (matched)
-                break;
+                continue;
             const start = expression.end - moduleName.length - 1;
             this.addFailureAt(start, moduleName.length, `${FAILURE_STRING} [${rule.name}]`);
         }
