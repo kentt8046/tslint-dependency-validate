@@ -2,39 +2,32 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = require("path");
 const ts = require("typescript");
-const minimatch = require("minimatch");
+const micromatch = require("micromatch");
 const module_1 = require("./module");
-const rootDir = process.cwd();
-const nodeModulesDirs = module_1.searchNodeModules(rootDir);
+const projectDir = process.cwd();
+const nodeModulesDirs = module_1.searchNodeModules(projectDir);
 const paths = module.paths;
-Object.assign(module.paths, [
-    ...nodeModulesDirs,
-    ...paths,
-]);
-const options = {
+Object.assign(module.paths, [...nodeModulesDirs, ...paths]);
+const matchOptions = {
     dot: true,
 };
 function isMatch(target, patterns) {
     for (const pattern of patterns) {
-        if (minimatch(target, pattern, options))
+        if (micromatch([target], pattern, matchOptions)) {
             return true;
+        }
     }
     return false;
 }
-const builtinModules = (() => {
-    const blacklist = [
-        "freelist",
-        "sys"
-    ];
-    return Object.keys(process.binding("natives")).filter(function (el) {
-        return !/^_|^internal|\//.test(el) && blacklist.indexOf(el) === -1;
-    }).sort();
-})();
+const blacklist = ["freelist", "sys"];
+const builtinModules = Object.keys(process.binding("natives"))
+    .filter(el => !/^_|^internal|\//.test(el) && blacklist.indexOf(el) === -1)
+    .sort();
 function isBuiltinModule(id) {
     return builtinModules.includes(id);
 }
 function evaluteRule(info, rule, _expect) {
-    const { rootDir, sourceDir, sourceName, moduleName, } = info;
+    const { rootDir, sourceDir, sourceName, moduleName } = info;
     const expect = !!_expect;
     let isTarget = isMatch(sourceName, rule.sources);
     if (Array.isArray(rule.excludeSources)) {
@@ -57,8 +50,8 @@ function evaluteRule(info, rule, _expect) {
             moduleFullName = require.resolve(moduleName);
         }
         moduleFullName = moduleFullName.replace(`${rootDir}/`, "");
-        const matched = ((isBuiltinModule(moduleFullName) && !!rule.builtin) ||
-            isMatch(moduleFullName, rule.resolvedImports));
+        const matched = (isBuiltinModule(moduleFullName) && !!rule.builtin) ||
+            isMatch(moduleFullName, rule.resolvedImports);
         if (expect === matched)
             return 3;
         return 0;
@@ -71,9 +64,9 @@ function visitImportDeclaration(source, expression, FAILURE_STRING, expect) {
         const [options] = _options;
         const moduleName = expression.getText().replace(/("|')/g, "");
         const info = {
-            rootDir,
-            sourceName: source.fileName.replace(`${rootDir}/`, ""),
-            sourceDir: path_1.dirname(source.fileName).replace(`${rootDir}/`, ""),
+            rootDir: projectDir,
+            sourceName: source.fileName.replace(`${projectDir}/`, ""),
+            sourceDir: path_1.dirname(source.fileName).replace(`${projectDir}/`, ""),
             moduleName,
         };
         for (const rule of options) {

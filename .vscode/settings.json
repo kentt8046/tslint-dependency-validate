@@ -1,0 +1,13 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "files.associations": {
+    ".prettierrc": "json"
+  },
+  "json.schemas": [
+    {
+      "fileMatch": [".prettierrc"],
+      "url": "http://json.schemastore.org/prettierrc"
+    }
+  ]
+}

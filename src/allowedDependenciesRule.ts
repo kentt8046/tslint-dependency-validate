@@ -12,11 +12,13 @@ export class Rule extends Lint.Rules.AbstractRule {
     description: "rule of allowed module in import or require",
     optionsDescription: "",
     options: null,
-    typescriptOnly: false
+    typescriptOnly: false,
   };
 
   public apply(sourceFile: ts.SourceFile): Lint.RuleFailure[] {
-    return this.applyWithWalker(new AllowedDependenciesRuleWalker(sourceFile, this.getOptions()));
+    return this.applyWithWalker(
+      new AllowedDependenciesRuleWalker(sourceFile, this.getOptions()),
+    );
   }
 }
 
@@ -25,7 +27,13 @@ class AllowedDependenciesRuleWalker extends Lint.RuleWalker {
     try {
       const source = node.getSourceFile();
       const expression = getExpression(node);
-      visitImportDeclaration.call(this, source, expression, Rule.FAILURE_STRING, true);
+      visitImportDeclaration.call(
+        this,
+        source,
+        expression,
+        Rule.FAILURE_STRING,
+        true,
+      );
     } catch (err) {
       this.addFailureAtNode(node, "syntax error");
     }
@@ -39,7 +47,13 @@ class AllowedDependenciesRuleWalker extends Lint.RuleWalker {
         const source = node.getSourceFile();
         const expression = getExpression(node);
 
-        visitImportDeclaration.call(this, source, expression, Rule.FAILURE_STRING, true);
+        visitImportDeclaration.call(
+          this,
+          source,
+          expression,
+          Rule.FAILURE_STRING,
+          true,
+        );
       } catch (err) {
         this.addFailureAtNode(node, "syntax error");
       }
@@ -53,12 +67,17 @@ class AllowedDependenciesRuleWalker extends Lint.RuleWalker {
         const source = node.getSourceFile();
         const expression = getExpression(node);
 
-        visitImportDeclaration.call(this, source, expression, Rule.FAILURE_STRING, true);
+        visitImportDeclaration.call(
+          this,
+          source,
+          expression,
+          Rule.FAILURE_STRING,
+          true,
+        );
       } catch (err) {
         this.addFailureAtNode(node, "syntax error");
       }
     }
     super.visitNode(node);
   }
-
 }

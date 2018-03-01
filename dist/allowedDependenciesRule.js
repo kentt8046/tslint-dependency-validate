@@ -15,7 +15,7 @@ Rule.metadata = {
     description: "rule of allowed module in import or require",
     optionsDescription: "",
     options: null,
-    typescriptOnly: false
+    typescriptOnly: false,
 };
 exports.Rule = Rule;
 class AllowedDependenciesRuleWalker extends Lint.RuleWalker {

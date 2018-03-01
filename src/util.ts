@@ -2,51 +2,44 @@ import { dirname, resolve } from "path";
 
 import * as ts from "typescript";
 import * as Lint from "tslint";
-import * as minimatch from "minimatch";
+import * as micromatch from "micromatch";
 
 import { searchNodeModules } from "./module";
 import { DependencyRule, ImportInfo } from "./interface";
 
-const rootDir = process.cwd();
-const nodeModulesDirs = searchNodeModules(rootDir);
-const paths = (<any>module).paths;
-Object.assign((<any>module).paths, [
-  ...nodeModulesDirs,
-  ...paths,
-]);
+const projectDir = process.cwd();
+const nodeModulesDirs = searchNodeModules(projectDir);
+const paths = module.paths;
+Object.assign(module.paths, [...nodeModulesDirs, ...paths]);
 
-const options = {
+const matchOptions = {
   dot: true,
 };
 function isMatch(target: string, patterns: string[]) {
   for (const pattern of patterns) {
-    if (minimatch(target, pattern, options)) return true;
+    if (micromatch([target], pattern, matchOptions)) {
+      return true;
+    }
   }
 
   return false;
 }
 
-const builtinModules = (() => {
-  const blacklist = [
-    "freelist",
-    "sys"
-  ];
+const blacklist = ["freelist", "sys"];
+const builtinModules = Object.keys((process as any).binding("natives"))
+  .filter(el => !/^_|^internal|\//.test(el) && blacklist.indexOf(el) === -1)
+  .sort();
 
-  return Object.keys((<any>process).binding("natives")).filter(function (el) {
-    return !/^_|^internal|\//.test(el) && blacklist.indexOf(el) === -1;
-  }).sort();
-})();
 function isBuiltinModule(id: string) {
   return builtinModules.includes(id);
 }
 
-function evaluteRule(info: ImportInfo, rule: DependencyRule, _expect?: boolean) {
-  const {
-    rootDir,
-    sourceDir,
-    sourceName,
-    moduleName,
-  } = info;
+function evaluteRule(
+  info: ImportInfo,
+  rule: DependencyRule,
+  _expect?: boolean,
+) {
+  const { rootDir, sourceDir, sourceName, moduleName } = info;
   const expect = !!_expect;
 
   let isTarget = isMatch(sourceName, rule.sources);
@@ -72,10 +65,9 @@ function evaluteRule(info: ImportInfo, rule: DependencyRule, _expect?: boolean) 
     }
     moduleFullName = moduleFullName.replace(`${rootDir}/`, "");
 
-    const matched = (
+    const matched =
       (isBuiltinModule(moduleFullName) && !!rule.builtin) ||
-      isMatch(moduleFullName, rule.resolvedImports)
-    );
+      isMatch(moduleFullName, rule.resolvedImports);
 
     if (expect === matched) return 3;
 
@@ -90,7 +82,8 @@ export function visitImportDeclaration(
   source: ts.SourceFile,
   expression: ts.Expression,
   FAILURE_STRING: string,
-  expect?: boolean) {
+  expect?: boolean,
+) {
   const _options = this.getOptions();
   if (Array.isArray(_options) && Array.isArray(_options[0])) {
     const [options]: DependencyRule[][] = _options;
@@ -98,9 +91,9 @@ export function visitImportDeclaration(
     const moduleName = expression.getText().replace(/("|')/g, "");
 
     const info: ImportInfo = {
-      rootDir,
-      sourceName: source.fileName.replace(`${rootDir}/`, ""),
-      sourceDir: dirname(source.fileName).replace(`${rootDir}/`, ""),
+      rootDir: projectDir,
+      sourceName: source.fileName.replace(`${projectDir}/`, ""),
+      sourceDir: dirname(source.fileName).replace(`${projectDir}/`, ""),
       moduleName,
     };
 
@@ -108,7 +101,11 @@ export function visitImportDeclaration(
       const matched = evaluteRule(info, rule, expect);
       if (matched) break;
       const start = expression.end - moduleName.length - 1;
-      this.addFailureAt(start, moduleName.length, `${FAILURE_STRING} [${rule.name}]`);
+      this.addFailureAt(
+        start,
+        moduleName.length,
+        `${FAILURE_STRING} [${rule.name}]`,
+      );
     }
   }
 }
