@@ -1,0 +1,42 @@
+{
+  "tsx Dependency": {
+    "prefix": "tsx",
+    "body": ["import * as React from \"react\";", ""],
+    "description": "import react"
+  },
+  "Class Component": {
+    "prefix": "cc",
+    "body": [
+      "class ${1:name} extends React.Component<Props> {",
+      "\tconstructor(props, context) {",
+      "\t\tsuper(props, context);",
+      "\t}",
+      "",
+      "\tpublic render() {",
+      "\t\tconst {} = this.props;",
+      "\t\tconst {} = this.state;",
+      "\t\treturn <${2:element}>${3:body}</${2:element}>;",
+      "\t}",
+      "}",
+      ""
+    ],
+    "description": "Create Class Component"
+  },
+  "ClassComponent Constructor": {
+    "prefix": "ccc",
+    "body": [
+      "constructor(props, context) {",
+      "\tsuper(props, context)",
+      "",
+      "\t${1:body}",
+      "}",
+      ""
+    ],
+    "description": "Define ClassComponent Constructor"
+  },
+  "bind handler": {
+    "prefix": "bind",
+    "body": ["this.${1:name} = this.${1:name}.bind(this);"],
+    "description": "Define Component handler"
+  }
+}

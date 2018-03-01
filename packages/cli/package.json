@@ -1,0 +1,12 @@
+{
+  "name": "@tslint-dependency-validate/cli",
+  "version": "0.5.2",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "1.11.1",
+    "tslint": "5.9.1",
+    "tslint-config-prettier": "1.9.0",
+    "typescript": "2.7.2"
+  }
+}
