@@ -38,5 +38,10 @@
     "prefix": "bind",
     "body": ["this.${1:name} = this.${1:name}.bind(this);"],
     "description": "Define Component handler"
+  },
+  "SFC": {
+    "prefix": "sfc",
+    "body": ["React.SFC<${1}> = props => <${2:div}>${3:body}</${2:div}>"],
+    "description": "React.SFC<{}>"
   }
 }

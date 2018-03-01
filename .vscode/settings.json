@@ -9,5 +9,9 @@
       "fileMatch": [".prettierrc"],
       "url": "http://json.schemastore.org/prettierrc"
     }
-  ]
+  ],
+  "files.exclude": {
+    "**/.fusebox": true,
+    "**/yarn-error.log": true
+  }
 }

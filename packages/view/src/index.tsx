@@ -1,4 +1,8 @@
 import * as React from "react";
 import { render } from "react-dom";
 
-render(<div>hello</div>, document.getElementById("root"));
+import "./patch";
+
+import { Browser } from "./application/component/page/browser/Browser";
+
+render(<Browser />, document.getElementById("root"));

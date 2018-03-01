@@ -1,17 +1,23 @@
 const path = require("path");
 
 const { FuseBox, Sparky } = require("fuse-box");
+const { TypeHelper } = require("fuse-box-typechecker");
 const express = require("express");
 
+const rootDir = __dirname;
+const outDir = "public/assets";
 const fuse = FuseBox.init({
   homeDir: "src",
   output: `${outDir}/$name.js`,
   target: "browser@es5",
   useTypescriptCompiler: true,
+  sourceMaps: {
+    inline: true,
+  },
 });
 
 fuse.bundle("vendor").instructions("~ index.tsx");
-const app = fuse.bundle(bundleName).instructions("!> [index.tsx]");
+const app = fuse.bundle("app").instructions("!> [index.tsx]");
 
 Sparky.task("build", () => {
   TypeHelper({
@@ -21,7 +27,7 @@ Sparky.task("build", () => {
     name: "App typechecker",
   }).runWatch("./src");
 
-  fuse.dev({ root: "public", port: 18080 }, routeDevServer);
+  fuse.dev({ root: "public", port: 8080 }, routeDevServer);
   app.watch().hmr({ reload: true });
 
   return fuse.run();
