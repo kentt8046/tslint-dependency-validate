@@ -2,6 +2,7 @@
   "extends": ["@commitlint/config-conventional"],
   "rules": {
     "scope-enum": [2, "always", ["all", "core", "cli", "view"]],
-    "scope-empty": [2, "never"]
+    "scope-empty": [2, "never"],
+    "subject-case": [0, "always"]
   }
 }
