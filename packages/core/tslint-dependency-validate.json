@@ -1,33 +1,13 @@
 {
-  "rulesDirectory": [
-    "./dist"
-  ],
+  "rulesDirectory": ["./dist"],
   "rules": {
     "allowed-dependencies": [
       false,
       [
         {
           "name": "rule1",
-          "sources": [
-            "**/file.ts"
-          ],
-          "imports": [
-            "./lib"
-          ]
-        }
-      ]
-    ],
-    "forbidden-dependencies": [
-      false,
-      [
-        {
-          "name": "rule1",
-          "sources": [
-            "**/file.ts"
-          ],
-          "imports": [
-            "../**"
-          ]
+          "sources": ["**/file.ts"],
+          "imports": ["./lib"]
         }
       ]
     ]

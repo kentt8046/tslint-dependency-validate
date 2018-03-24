@@ -1,5 +1,0 @@
-import test from "typescript";
-import { someFunction } from "../allowedDependencies/lib";
-
-test.todo("some test");
-someFunction();
