@@ -43,5 +43,15 @@
     "prefix": "sfc",
     "body": ["React.SFC<${1}> = props => <${2:div}>${3:body}</${2:div}>"],
     "description": "React.SFC<{}>"
+  },
+  "props": {
+    "prefix": "props",
+    "body": ["const {${2:props}} = ${1:this.}props;"],
+    "description": "Pick props"
+  },
+  "state": {
+    "prefix": "state",
+    "body": ["const {${1:state}} = this.state;"],
+    "description": "Pick state"
   }
 }

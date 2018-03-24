@@ -1,0 +1,5 @@
+{
+  "schema": {
+    "files": "packages/cli/resource/graphql-schema/**/*.gql"
+  }
+}

@@ -7,6 +7,10 @@
   ],
   "rules": {
     "no-empty-interface": false,
-    "import-name": false
+    "import-name": false,
+    "object-literal-sort-keys": false,
+    "no-object-literal-type-assertion": false,
+    "max-classes-per-file": false,
+    "array-type": false
   }
 }
