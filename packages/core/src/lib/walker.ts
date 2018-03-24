@@ -2,37 +2,9 @@ import { dirname, resolve } from "path";
 
 import * as ts from "typescript";
 import * as Lint from "tslint";
-import * as micromatch from "micromatch";
 
-import { searchNodeModules } from "./module";
-import { DependencyRule, ImportInfo } from "./interface";
-
-const projectDir = process.cwd();
-const nodeModulesDirs = searchNodeModules(projectDir);
-const paths = module.paths;
-Object.assign(module.paths, [...nodeModulesDirs, ...paths]);
-
-const matchOptions = {
-  dot: true,
-};
-function isMatch(target: string, patterns: string[]) {
-  for (const pattern of patterns) {
-    if (micromatch([target], pattern, matchOptions)) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-const blacklist = ["freelist", "sys"];
-const builtinModules = Object.keys((process as any).binding("natives"))
-  .filter(el => !/^_|^internal|\//.test(el) && blacklist.indexOf(el) === -1)
-  .sort();
-
-function isBuiltinModule(id: string) {
-  return builtinModules.includes(id);
-}
+import { isBuiltinModule, projectDir } from "./file";
+import { isMatch } from "./match";
 
 function evaluteRule(
   info: ImportInfo,
@@ -85,6 +57,7 @@ export function visitImportDeclaration(
   expect?: boolean,
 ) {
   const _options = this.getOptions();
+
   if (Array.isArray(_options) && Array.isArray(_options[0])) {
     const [options]: DependencyRule[][] = _options;
 
@@ -101,6 +74,7 @@ export function visitImportDeclaration(
       const matched = evaluteRule(info, rule, expect);
       if (matched) break;
       const start = expression.end - moduleName.length - 1;
+
       this.addFailureAt(
         start,
         moduleName.length,

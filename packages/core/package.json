@@ -14,7 +14,7 @@
     "lint": "tslint -c ./tslint.json './src/**/*.ts{,x}'"
   },
   "dependencies": {
-    "micromatch": "3.1.9"
+    "micromatch": "^3.1.10"
   },
   "devDependencies": {
     "@types/micromatch": "3.1.0",
