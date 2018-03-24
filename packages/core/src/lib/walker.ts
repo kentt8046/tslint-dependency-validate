@@ -1,49 +1,63 @@
-import { resolve } from "path";
+import * as path from "path";
 
 import * as ts from "typescript";
 import * as Lint from "tslint";
 
-import { isBuiltinModule } from "./file";
+import { isNativeModule } from "./file";
 import { isMatch } from "./match";
-import { getWalkerInfo } from "./options";
+import { getWalkerInfo, WalkerInfo } from "./options";
 
+interface ImportInfo extends WalkerInfo {
+  moduleName: string;
+}
 function evaluteRule(info: ImportInfo, rule: DependencyRule) {
   const { rootDir, sourceDir, sourceName, moduleName } = info;
 
+  // そもそもimportsがない -> チェックしない
+  if (!rule.imports) return -1;
+
+  // lint対象のファイルかどうか
   let isTarget = isMatch(sourceName, rule.sources);
-  if (Array.isArray(rule.excludeSources)) {
-    isTarget = isTarget && !isMatch(sourceName, rule.excludeSources);
+  if (Array.isArray(rule.excludes)) {
+    isTarget = isTarget && !isMatch(sourceName, rule.excludes);
   }
   if (!isTarget) return 1;
 
-  const hasImport = Array.isArray(rule.imports);
-  if (Array.isArray(rule.imports)) {
-    const matched = isMatch(moduleName, rule.imports);
-    if (matched) return true;
-  }
-
-  if (Array.isArray(rule.resolvedImports)) {
-    let moduleFullName;
-    if (moduleName.startsWith(".")) {
-      // relative import
-      moduleFullName = resolve(sourceDir, moduleName);
-    } else {
-      // node module import
-      moduleFullName = require.resolve(moduleName);
-    }
-    moduleFullName = moduleFullName.replace(`${rootDir}/`, "");
-
-    const matched =
-      (isBuiltinModule(moduleFullName) && !!rule.builtin) ||
-      isMatch(moduleFullName, rule.resolvedImports);
-
-    if (matched) return 3;
-
-    return 0;
-  }
-
-  return hasImport && 4;
+  return relativeImport(info, rule) || moduleImport(info, rule);
 }
+
+const relativeImport = (
+  { moduleName, sourceDir, rootDir }: ImportInfo,
+  { imports: { relative, resolve } }: DependencyRule,
+) => {
+  if (moduleName.startsWith(".")) {
+    if (Array.isArray(relative) && isMatch(moduleName, relative)) {
+      return 2;
+    }
+
+    const moduleFullName = path
+      .resolve(sourceDir, moduleName)
+      .replace(`${rootDir}/`, "");
+    if (Array.isArray(resolve) && isMatch(moduleFullName, resolve)) {
+      return 3;
+    }
+  }
+
+  return 0;
+};
+
+const moduleImport = (
+  { moduleName }: ImportInfo,
+  { imports: { native, nodeModules } }: DependencyRule,
+) => {
+  if (isNativeModule(moduleName) && native) {
+    return 4;
+  } else if (Array.isArray(nodeModules) && isMatch(moduleName, nodeModules)) {
+    return 5;
+  }
+
+  return 0;
+};
 
 export function visitImportDeclaration(
   this: Lint.RuleWalker,
@@ -53,16 +67,15 @@ export function visitImportDeclaration(
 ) {
   const options = this.getOptions();
 
-  const winfo = getWalkerInfo(
+  const info = getWalkerInfo(
     source.fileName,
     Array.isArray(options) && options[0],
   );
 
-  if (winfo) {
-    const { rules, ...info } = winfo;
+  if (info) {
     const moduleName = expression.getText().replace(/("|')/g, "");
 
-    for (const rule of rules) {
+    for (const rule of info.rules) {
       const matched = evaluteRule({ ...info, moduleName }, rule);
       if (matched) break;
       const start = expression.end - moduleName.length - 1;

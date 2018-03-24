@@ -11,12 +11,12 @@ const paths = module.paths;
 Object.assign(module.paths, [...nodeModulesDirs, ...paths]);
 
 const blacklist = ["freelist", "sys"];
-const builtinModules = Object.keys((process as any).binding("natives"))
+const nativeModules = Object.keys((process as any).binding("natives"))
   .filter(el => !/^_|^internal|\//.test(el) && blacklist.indexOf(el) === -1)
   .sort();
 
-export function isBuiltinModule(id: string) {
-  return builtinModules.includes(id);
+export function isNativeModule(id: string) {
+  return nativeModules.includes(id);
 }
 
 export function searchNodeModules(dir: string): string[] {

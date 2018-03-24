@@ -9,13 +9,13 @@ const nodeModulesDirs = searchNodeModules(exports.projectDir);
 const paths = module.paths;
 Object.assign(module.paths, [...nodeModulesDirs, ...paths]);
 const blacklist = ["freelist", "sys"];
-const builtinModules = Object.keys(process.binding("natives"))
+const nativeModules = Object.keys(process.binding("natives"))
     .filter(el => !/^_|^internal|\//.test(el) && blacklist.indexOf(el) === -1)
     .sort();
-function isBuiltinModule(id) {
-    return builtinModules.includes(id);
+function isNativeModule(id) {
+    return nativeModules.includes(id);
 }
-exports.isBuiltinModule = isBuiltinModule;
+exports.isNativeModule = isNativeModule;
 function searchNodeModules(dir) {
     const result = [];
     for (const nested of fs_1.readdirSync(dir)) {

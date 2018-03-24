@@ -2,9 +2,11 @@
   {
     "name": "rule1",
     "sources": ["**/*.ts"],
-    "excludeSources": ["**/not-target.ts"],
-    "imports": ["./lib"],
-    "resolvedImports": ["**/some-module"],
-    "builtin": true
+    "excludes": ["**/not-target.ts"],
+    "imports": {
+      "relative": ["./lib"],
+      "resolve": ["**/some-module"],
+      "native": true
+    }
   }
 ]

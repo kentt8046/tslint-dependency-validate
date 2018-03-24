@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 
 import { searchTslintDir, getTsdvrcPath } from "./file";
 
-interface WalkerInfo {
+export interface WalkerInfo {
   rootDir: string;
   rules: DependencyRule[];
   sourceName: string;

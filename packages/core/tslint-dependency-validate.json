@@ -7,7 +7,9 @@
         {
           "name": "rule1",
           "sources": ["**/file.ts"],
-          "imports": ["./lib"]
+          "imports": {
+            "relative": "./lib"
+          }
         }
       ]
     ]

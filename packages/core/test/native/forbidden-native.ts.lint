@@ -1,0 +1,4 @@
+import { dirname, resolve } from "path";
+                                  ~~~~   [this dependency is not allowed. [rule1]]
+import test from "typescript";
+import { someModule } from "./module/some-module";

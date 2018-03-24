@@ -6,7 +6,8 @@
     "imports": {
       "relative": ["./lib"],
       "resolve": ["**/some-module"],
-      "native": true
+      "native": true,
+      "nodeModules": false
     }
   }
 ]
