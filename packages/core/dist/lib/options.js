@@ -10,7 +10,6 @@ exports.getWalkerInfo = (source, options) => {
     const info = path_1.parse(source);
     if (Array.isArray(options)) {
         return {
-            rootDir,
             rules: options,
             sourceName: info.base,
             sourceDir: info.dir.replace(rootDir, ""),
@@ -20,7 +19,6 @@ exports.getWalkerInfo = (source, options) => {
     if (!tsdvrcFile)
         return null;
     return {
-        rootDir,
         rules: JSON.parse(fs_1.readFileSync(tsdvrcFile, "utf8")),
         sourceName: info.base,
         sourceDir: info.dir.replace(rootDir, ""),

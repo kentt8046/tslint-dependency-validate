@@ -1,0 +1,6 @@
+import { dirname, resolve } from "path";
+import test from "typescript";
+                  ~~~~~~~~~~   [this dependency is not allowed. [x1]]
+import { someModule } from "./module/some-module";
+import { someFunction } from "./lib";
+import { noop } from "./lib2";

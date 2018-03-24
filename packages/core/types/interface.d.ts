@@ -5,7 +5,7 @@ type ModuleName = string;
 
 interface DependencyRule {
   name: RuleName;
-  sources: PathString[];
+  sources?: PathString[];
   extends?: RuleName[];
   excludes?: PathString[];
   imports: {

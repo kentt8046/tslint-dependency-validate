@@ -1,0 +1,19 @@
+[
+  {
+    "name": "base",
+    "sources": ["**/base.ts"],
+    "imports": {
+      "relative": ["./lib"]
+    }
+  },
+  {
+    "name": "x1",
+    "sources": ["**/x1.ts"],
+    "extends": ["base"],
+    "imports": {
+      "relative": ["./lib2"],
+      "resolve": ["module/some-module"],
+      "native": true
+    }
+  }
+]

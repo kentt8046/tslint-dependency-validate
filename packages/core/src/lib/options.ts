@@ -4,7 +4,6 @@ import { readFileSync } from "fs";
 import { searchTslintDir, getTsdvrcPath } from "./file";
 
 export interface WalkerInfo {
-  rootDir: string;
   rules: DependencyRule[];
   sourceName: string;
   sourceDir: string;
@@ -18,10 +17,8 @@ export const getWalkerInfo = (
   if (!rootDir) return null;
 
   const info = parse(source);
-
   if (Array.isArray(options)) {
     return {
-      rootDir,
       rules: options,
       sourceName: info.base,
       sourceDir: info.dir.replace(rootDir, ""),
@@ -32,7 +29,6 @@ export const getWalkerInfo = (
   if (!tsdvrcFile) return null;
 
   return {
-    rootDir,
     rules: JSON.parse(readFileSync(tsdvrcFile, "utf8")),
     sourceName: info.base,
     sourceDir: info.dir.replace(rootDir, ""),
