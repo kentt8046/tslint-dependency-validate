@@ -5,7 +5,8 @@
   "files.associations": {
     ".prettierrc": "json",
     ".stylelintrc": "json",
-    ".gqlconfig": "json"
+    ".gqlconfig": "json",
+    ".tsdvrc": "json"
   },
   "json.schemas": [
     {
