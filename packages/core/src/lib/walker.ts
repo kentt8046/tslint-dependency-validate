@@ -1,18 +1,14 @@
-import { dirname, resolve } from "path";
+import { resolve } from "path";
 
 import * as ts from "typescript";
 import * as Lint from "tslint";
 
-import { isBuiltinModule, projectDir } from "./file";
+import { isBuiltinModule } from "./file";
 import { isMatch } from "./match";
+import { getWalkerInfo } from "./options";
 
-function evaluteRule(
-  info: ImportInfo,
-  rule: DependencyRule,
-  _expect?: boolean,
-) {
+function evaluteRule(info: ImportInfo, rule: DependencyRule) {
   const { rootDir, sourceDir, sourceName, moduleName } = info;
-  const expect = !!_expect;
 
   let isTarget = isMatch(sourceName, rule.sources);
   if (Array.isArray(rule.excludeSources)) {
@@ -23,7 +19,7 @@ function evaluteRule(
   const hasImport = Array.isArray(rule.imports);
   if (Array.isArray(rule.imports)) {
     const matched = isMatch(moduleName, rule.imports);
-    if (matched) return expect;
+    if (matched) return true;
   }
 
   if (Array.isArray(rule.resolvedImports)) {
@@ -41,12 +37,12 @@ function evaluteRule(
       (isBuiltinModule(moduleFullName) && !!rule.builtin) ||
       isMatch(moduleFullName, rule.resolvedImports);
 
-    if (expect === matched) return 3;
+    if (matched) return 3;
 
     return 0;
   }
 
-  return hasImport ? !expect : 4;
+  return hasImport && 4;
 }
 
 export function visitImportDeclaration(
@@ -54,24 +50,20 @@ export function visitImportDeclaration(
   source: ts.SourceFile,
   expression: ts.Expression,
   FAILURE_STRING: string,
-  expect?: boolean,
 ) {
-  const _options = this.getOptions();
+  const options = this.getOptions();
 
-  if (Array.isArray(_options) && Array.isArray(_options[0])) {
-    const [options]: DependencyRule[][] = _options;
+  const winfo = getWalkerInfo(
+    source.fileName,
+    Array.isArray(options) && options[0],
+  );
 
+  if (winfo) {
+    const { rules, ...info } = winfo;
     const moduleName = expression.getText().replace(/("|')/g, "");
 
-    const info: ImportInfo = {
-      rootDir: projectDir,
-      sourceName: source.fileName.replace(`${projectDir}/`, ""),
-      sourceDir: dirname(source.fileName).replace(`${projectDir}/`, ""),
-      moduleName,
-    };
-
-    for (const rule of options) {
-      const matched = evaluteRule(info, rule, expect);
+    for (const rule of rules) {
+      const matched = evaluteRule({ ...info, moduleName }, rule);
       if (matched) break;
       const start = expression.end - moduleName.length - 1;
 

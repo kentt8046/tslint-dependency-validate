@@ -1,5 +1,9 @@
 import { readdirSync, statSync } from "fs";
-import { resolve } from "path";
+import { resolve, parse } from "path";
+
+import * as Lint from "tslint";
+
+const TSDVRC_FILENAME = ".tsdvrc";
 
 export const projectDir = process.cwd();
 const nodeModulesDirs = searchNodeModules(projectDir);
@@ -32,3 +36,24 @@ export function searchNodeModules(dir: string): string[] {
 
   return result;
 }
+
+export const searchTslintDir = (source: PathString) => {
+  const file = Lint.Configuration.findConfigurationPath(null, source);
+
+  return file && parse(file).dir;
+};
+
+export const getTsdvrcPath = (
+  tslintDir: PathString,
+  relative: PathString = "",
+) => {
+  try {
+    const file = resolve(tslintDir, relative, TSDVRC_FILENAME);
+
+    require.resolve(file);
+
+    return file;
+  } catch {
+    return "";
+  }
+};

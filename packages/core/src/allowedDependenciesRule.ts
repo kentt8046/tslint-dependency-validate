@@ -32,7 +32,6 @@ class AllowedDependenciesRuleWalker extends Lint.RuleWalker {
         source,
         expression,
         Rule.FAILURE_STRING,
-        true,
       );
     } catch (err) {
       this.addFailureAtNode(node, "syntax error");
@@ -72,7 +71,6 @@ class AllowedDependenciesRuleWalker extends Lint.RuleWalker {
           source,
           expression,
           Rule.FAILURE_STRING,
-          true,
         );
       } catch (err) {
         this.addFailureAtNode(node, "syntax error");

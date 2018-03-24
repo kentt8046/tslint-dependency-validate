@@ -1,0 +1,10 @@
+[
+  {
+    "name": "rule1",
+    "sources": ["**/*.ts"],
+    "excludeSources": ["**/not-target.ts"],
+    "imports": ["./lib"],
+    "resolvedImports": ["**/some-module"],
+    "builtin": true
+  }
+]

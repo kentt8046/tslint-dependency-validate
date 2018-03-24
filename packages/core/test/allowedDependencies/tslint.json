@@ -1,25 +1,15 @@
 {
-  "rulesDirectory": [
-    "../../dist"
-  ],
+  "rulesDirectory": ["../../dist"],
   "rules": {
     "allowed-dependencies": [
       true,
       [
         {
           "name": "rule1",
-          "sources": [
-            "**/*.ts"
-          ],
-          "excludeSources": [
-            "**/not-target.ts"
-          ],
-          "imports": [
-            "./lib"
-          ],
-          "resolvedImports": [
-            "**/some-module"
-          ],
+          "sources": ["**/*.ts"],
+          "excludeSources": ["**/not-target.ts"],
+          "imports": ["./lib"],
+          "resolvedImports": ["**/some-module"],
           "builtin": true
         }
       ]
@@ -31,16 +21,10 @@
       [
         {
           "name": "rule1",
-          "sources": [
-            "**/*.js"
-          ],
+          "sources": ["**/*.js"],
           "excludeSources": [],
-          "imports": [
-            "./lib"
-          ],
-          "resolvedImports": [
-            "**/some-module"
-          ],
+          "imports": ["./lib"],
+          "resolvedImports": ["**/some-module"],
           "builtin": true
         }
       ]
